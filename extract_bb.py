@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+# Extract bounding boxes from an instance segmentation mask
 
 def extract_bb(labeltxt, imgpath, size = None):
     with open(labeltxt, 'r') as file:
