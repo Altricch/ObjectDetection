@@ -1,5 +1,5 @@
 # Ignore folder
-/04Training_Data2
+/POV_DATASET
 
 # Ignore logs and temporary files
 *.log

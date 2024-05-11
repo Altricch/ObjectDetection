@@ -29,6 +29,7 @@ class YoloLoss(nn.Module):
         # First, reshape so we have (S,S,(C+B*5)), e.g. (S,S,30) for 2 bounding boxes
         predictions = predictions.reshape(-1, self.S, self.S, self.C + self.B*5)
         
+        # Calculate IoU for predicted BBoxes with target boxes
         # 21 ... 25 -> four bounding box values for the first bbox
         iou_b1 = intersection_over_union(predictions[..., 21:25], target[..., 21:25])
         # 26 ... 30 -> four bounding box values for the second bbox,but only one target so stay the same
@@ -54,13 +55,14 @@ class YoloLoss(nn.Module):
             )
         )
         
+        
+        
         box_targets = exists_box * target[...,21:25]
         
         # + 1e-6 for numerical stability, if its 0 (towards beginning), then goes against infinity the derivative
         
         # 2:4 is for width and height
-        box_predictions[..., 2:4] = torch.sign(box_predictions[..., 2:4]) \
-                                    * torch.sqrt(torch.abs(box_predictions[...,2:4]) + 1e-6)
+        box_predictions[..., 2:4] = torch.sign(box_predictions[..., 2:4]) * torch.sqrt(torch.abs(box_predictions[...,2:4] + 1e-6))
         
         # (N, S, S, 25) -> ... for all N, S, S
         box_targets[..., 2:4] = torch.sqrt(box_targets[..., 2:4])

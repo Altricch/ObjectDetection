@@ -68,7 +68,8 @@ def non_max_suppression(bboxes, iou_threshold, threshold, box_format="corners"):
     Returns:
         list: bboxes after performing NMS given a specific IoU threshold
     """
-
+    # print("Now in nms")
+    # breakpoint()
     assert type(bboxes) == list
 
     bboxes = [box for box in bboxes if box[1] > threshold]
@@ -200,9 +201,9 @@ def mean_average_precision(
         recalls = torch.cat((torch.tensor([0]), recalls))
         # torch.trapz for numerical integration
         average_precisions.append(torch.trapz(precisions, recalls))
-    print("AVG PREC", average_precisions)
-    print("LEN AVG PREC", len(average_precisions))
-    return sum(average_precisions) / len(average_precisions)
+    # print("AVG PREC", average_precisions)
+    # print("LEN AVG PREC", len(average_precisions))
+    return sum(average_precisions) / (len(average_precisions) + epsilon)
 
 
 def plot_image(image, boxes):
@@ -246,7 +247,7 @@ def get_bboxes(
     box_format="midpoint",
     device="cuda",
 ):
-    breakpoint()
+    # breakpoint()
     all_pred_boxes = []
     all_true_boxes = []
 
@@ -273,10 +274,9 @@ def get_bboxes(
                 box_format=box_format,
             )
 
-
-            #if batch_idx == 0 and idx == 0:
-            #    plot_image(x[idx].permute(1,2,0).to("cpu"), nms_boxes)
-            #    print(nms_boxes)
+            if batch_idx == 0 and idx == 0:
+               plot_image(x[idx].permute(1,2,0).to("cpu"), nms_boxes)
+               print(nms_boxes)
 
             for nms_box in nms_boxes:
                 all_pred_boxes.append([train_idx] + nms_box)

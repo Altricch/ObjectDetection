@@ -18,6 +18,7 @@ from utils import (
 )
 
 from loss import YoloLoss
+torch.autograd.set_detect_anomaly(True)
 
 seed = 123
 torch.manual_seed(seed)
