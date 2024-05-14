@@ -43,7 +43,7 @@ class YoloLoss(nn.Module):
         box_pred = torch.cat([self.sigmoid(pred[..., 1:3]), torch.exp(pred[..., 3:5]) * anchors], dim = -1)
         ious = intersection_over_union(box_pred[obj], target[..., 1:5][obj]).detach()
         
-        object_loss = self.bce((pred[..., 0:1][obj], (ious * target[..., 0:1][obj])))
+        object_loss = self.mse(self.sigmoid(pred[..., 0:1][obj]), ious * target[..., 0:1][obj])
         
         
         

@@ -31,7 +31,12 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
     loop = tqdm(train_loader, leave=True)
     losses = []
     
+    print("NOW IN TRAIN")
+    # breakpoint()
+    
     for batch_idx, (x,y) in enumerate(loop):
+        
+        print(x.shape)
         
         print("BATCH INDX", batch_idx)
         
@@ -55,7 +60,7 @@ def train_fn(train_loader, model, optimizer, loss_fn, scaler, scaled_anchors):
         losses.append(loss.item())
         optimizer.zero_grad()
         scaler.scale(loss).backward()
-        scaler.step()
+        scaler.step(optimizer)
         scaler.update()
         
         # Update progress bar

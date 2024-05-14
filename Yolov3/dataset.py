@@ -14,7 +14,7 @@ from utils import (iou_width_height as iou,
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class YOLODataset(Dataset):
-    def __init__(self, csv, img_dir, label_dir, anchors, image_size=416,S=[13,26,52], C=20, transform=None):
+    def __init__(self, csv, img_dir, label_dir, anchors, image_size=416, S=[13,26,52], C=20, transform=None):
         self.annotations = pd.read_csv(csv)
         self.img_dir = img_dir
         self.label_dir = label_dir
@@ -35,10 +35,9 @@ class YOLODataset(Dataset):
     
     def __getitem__(self, index):
         # index, 1 is where name is located
-        print("LABEL DIR", self.label_dir)
-        print("ANNOTATION", self.annotations.iloc[index, 1])
+        # print("LABEL DIR", self.label_dir)
+        # print("ANNOTATION", self.annotations.iloc[index, 1])
         label_path = os.path.join(self.label_dir, self.annotations.iloc[index, 1])
-        print("LABEL PATH",label_path)
         #[class, x,y,w,h] as per text file, to augment we use albumentation, they want [x,y,w,h, class], thus, np.roll
         bboxes = np.roll(np.loadtxt(fname=label_path, delimiter=" ", ndmin=2), 4, axis=1).tolist() 
         img_path = os.path.join(self.img_dir, self.annotations.iloc[index, 0])
@@ -89,8 +88,7 @@ class YOLODataset(Dataset):
                     targets[scale_idx][anchor_on_scale, i, j, 5] = int(class_label)
                     has_anchor[scale_idx] = True
                     
-                    
                 elif not anchor_taken and iou_anchors[anchor_idx] > self.ignore_iou_thresh:
                     targets[scale_idx][anchor_on_scale, i,j,0] = -1 #ignore index
                     
-        return targets, image  
+        return image, tuple(targets)  
